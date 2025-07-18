@@ -1,88 +1,77 @@
+// src/assets/pages/Login.jsx
 import React, { useState } from "react";
-import { supabase } from "./supabase";
-import Login 
-const Login = () => {
+import { useNavigate } from "react-router-dom";
+import "./Login.css";
+
+const LoginPage = () => {
   const [phone, setPhone] = useState("");
-  const [otp, setOtp] = useState("");
-  const [step, setStep] = useState("login");
-  const [error, setError] = useState("");
+  const [password, setPassword] = useState("");
+  const [role, setRole] = useState("user"); // default is user
+  const navigate = useNavigate();
 
-  
-  const handleLogin = async () => {
-    setError("");
-    const { error } = await supabase.auth.signInWithOtp({
-      phone: "+263" + phone,
-    });
+  const handleLogin = () => {
+    if (!phone.trim() || !password.trim()) {
+      alert("Phone and password are required");
+      return;
+    }
 
-    if (error) {
-      setError("Failed to send OTP.");
+    console.log("Logging in:", { phone, password, role });
+
+    if (role === 'admin') {
+      navigate("/admin-dashboard");
     } else {
-      setStep("verify");
+      navigate("/dashboard");
     }
   };
 
-  
-  const handleVerify = async () => {
-    setError("");
-    const { error } = await supabase.auth.verifyOtp({
-      phone: "+263" + phone,
-      token: otp,
-      type: "sms",
-    });
-
-    if (error) {
-      setError("Invalid OTP.");
-    } else {
-      alert("Login successful!");
+  const handleSignUp = () => {
+    if (!phone.trim() || !password.trim()) {
+      alert("Phone and password are required");
+      return;
     }
+
+    console.log("Signing up:", { phone, password, role });
+
+    // Simulate sending OTP and redirect to verification page
+    navigate("/verify", { state: { phone } });
+  };
+
+  const handleForgotPassword = () => {
+    navigate("/forgot-password");
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <div className="bg-white p-8 rounded-md shadow-md w-96">
-        <h2 className="text-2xl font-bold mb-4 text-center">
-          {step === "login" ? "Welcome back!" : "Verify Your Account"}
-        </h2>
+    <div className="box">
+      <h2>Login</h2>
 
-        {step === "login" ? (
-          <>
-            <label className="block mb-2">Phone Number</label>
-            <input
-              className="w-full mb-4 p-2 border rounded"
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-              placeholder="771653563"
-            />
-            <button
-              onClick={handleLogin}
-              className="w-full bg-blue-700 text-white py-2 rounded"
-            >
-              Send OTP
-            </button>
-          </>
-        ) : (
-          <>
-            <label className="block mb-2">OTP Code</label>
-            <input
-              className="w-full mb-4 p-2 border rounded"
-              value={otp}
-              onChange={(e) => setOtp(e.target.value)}
-              maxLength={6}
-              placeholder="Enter 6-digit code"
-            />
-            <button
-              onClick={handleVerify}
-              className="w-full bg-purple-600 text-white py-2 rounded"
-            >
-              Verify OTP
-            </button>
-          </>
-        )}
+      <input
+        type="tel"
+        placeholder="Enter your phone"
+        value={phone}
+        onChange={(e) => setPhone(e.target.value)}
+      />
 
-        {error && <p className="text-red-500 mt-2 text-center">{error}</p>}
+      <input
+        type="password"
+        placeholder="Enter your password"
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
+      />
+
+      <select value={role} onChange={(e) => setRole(e.target.value)}>
+        <option value="user">User</option>
+        <option value="admin">Admin</option>
+      </select>
+
+      <div className="button-row">
+        <button onClick={handleLogin} className="login-btn">Login</button>
+        <button onClick={handleSignUp} className="signup-btn">Sign Up</button>
       </div>
+
+      <p className="forgot-link" onClick={handleForgotPassword}>Forgot password?</p>
     </div>
   );
 };
 
-export default Login;
+export default LoginPage;
+

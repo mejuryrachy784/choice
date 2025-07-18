@@ -1,0 +1,80 @@
+.instructions-container {
+  max-width: 700px;
+  margin: 40px auto;
+  padding: 20px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f0f8ff;
+  color: #002c5f;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.instructions-container h2 {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.summary-stats {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.stat {
+  background-color: #d0e8ff;
+  padding: 1rem 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 3px 6px rgba(0,80,157,0.2);
+  min-width: 140px;
+  text-align: center;
+}
+
+.stat h3 {
+  margin: 0 0 0.5rem 0;
+  font-weight: 600;
+}
+
+.stat p {
+  font-size: 1.3rem;
+  font-weight: bold;
+  margin: 0;
+}
+
+.session-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.session-card {
+  background-color: #cce0ff;
+  padding: 15px 20px;
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0,80,157,0.15);
+}
+
+.session-card h4 {
+  margin: 0 0 0.4rem 0;
+  color: #004080;
+}
+
+.session-card p {
+  margin: 0.1rem 0;
+  font-size: 0.9rem;
+  color: #002c5f;
+}
+
+.feedback {
+  font-weight: 600;
+  margin-top: 0.4rem;
+}
+
+.feedback.excellent {
+  color: #007b00;
+}
+
+.feedback.good {
+  color: #a07f00;
+}

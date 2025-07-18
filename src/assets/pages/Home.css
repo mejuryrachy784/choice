@@ -1,0 +1,96 @@
+/* Home.css */
+
+.home-container {
+  max-width: 500px;
+  margin: 60px auto;
+  padding: 30px;
+  border-radius: 12px;
+  background-color: #f0f4f8;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.home-container h1 {
+  margin-bottom: 10px;
+  font-size: 28px;
+  color: #2c3e50;
+}
+
+.home-container p {
+  margin-bottom: 25px;
+  font-size: 16px;
+  color: #555;
+}
+
+.home-container input {
+  width: 100%;
+  padding: 12px;
+  font-size: 16px;
+  border: 2px solid #ccc;
+  border-radius: 8px;
+  box-sizing: border-box;
+  margin-bottom: 15px;
+  transition: border-color 0.3s;
+}
+
+.home-container input:focus {
+  border-color: #007bff;
+  outline: none;
+}
+
+.home-container button {
+  width: 100%;
+  padding: 12px;
+  font-size: 16px;
+  font-weight: bold;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.home-container button:hover {
+  background-color: #0056b3;
+}
+
+.result-box {
+  margin-top: 25px;
+  padding: 20px;
+  background-color: #ffffff;
+  border-left: 5px solid #007bff;
+  border-radius: 10px;
+  text-align: left;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+.result-box .progress {
+  font-weight: bold;
+  font-size: 18px;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.result-box .message {
+  font-size: 16px;
+  margin-bottom: 8px;
+}
+
+.result-box .message.green {
+  color: green;
+}
+
+.result-box .message.blue {
+  color: #007bff;
+}
+
+.result-box .extra {
+  font-size: 14px;
+}
+
+.result-box .extra.blue {
+  color: #007bff;
+}
+

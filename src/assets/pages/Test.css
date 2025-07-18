@@ -1,0 +1,62 @@
+
+css
+.booking-container, .instructions-container {
+  width: 100vw;
+  height: 100vh;
+  padding: 2rem;
+  box-sizing: border-box;
+  background-color: #f7f7f7;
+  font-family: sans-serif;
+}
+
+.warning-banner {
+  background-color: red;
+  color: black;
+  font-weight: bold;
+  padding: 10px;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.form-wrapper {
+  display: flex;
+  justify-content: space-between;
+  gap: 2rem;
+  margin-bottom: 1rem;
+}
+
+.left-form, .right-form {
+  display: flex;
+  flex-direction: column;
+  width: 45%;
+}
+input {
+  padding: 0.5rem;
+  margin-bottom: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.button-group {
+  display: flex;
+  justify-content: space-between;
+}
+
+.left-button, .right-button {
+  padding: 0.75rem 1.5rem;
+  font-weight: bold;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.left-button {
+  background-color: #333;
+  color: #fff;
+}
+
+.right-button {
+  background-color: #28a745;
+  color: white;
+}
+
