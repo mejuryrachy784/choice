@@ -39,8 +39,8 @@ A comprehensive web application for driving license test preparation with voice 
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/mejuryrachy784/driving-license-quiz.git
-   cd driving-license-quiz
+   git clone https://github.com/mejuryrachy784/choice.git
+   cd choice
    ```
 
 2. **Install dependencies**
@@ -132,7 +132,7 @@ After running the test user creation script, you can use:
 ## 🗂️ Project Structure
 
 ```
-driving-license-quiz/
+choice/
 ├── backend/                 # Backend server
 │   ├── controllers/        # Route controllers
 │   ├── models/            # Database models
@@ -246,7 +246,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## 📞 Support
 
 If you encounter any issues or have questions:
-1. Check the [Issues](https://github.com/mejuryrachy784/driving-license-quiz/issues) page
+1. Check the [Issues](https://github.com/mejuryrachy784/choice/issues) page
 2. Create a new issue if your problem isn't already reported
 3. Provide detailed information about the problem
 
