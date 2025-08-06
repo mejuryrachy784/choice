@@ -2,6 +2,7 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 
 export default defineConfig({
+  base: './', // ✅ Important: ensures relative paths in build output
   plugins: [react()],
   build: {
     outDir: 'dist',
@@ -14,8 +15,7 @@ export default defineConfig({
   },
   server: {
     proxy: {
-      '/api': 'http://localhost:5001', // Proxy requests to your Express backend
+      '/api': 'http://localhost:5001', // Proxy requests to your backend in dev
     },
   },
 });
-
