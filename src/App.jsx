@@ -3,6 +3,7 @@ import './app.css';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Promo from './assets/pages/Promo';
 import Login from './assets/pages/Login';
+import LoginDebug from './assets/pages/LoginDebug';
 import Signup from './assets/pages/Signup';
 import ForgotPassword from './assets/pages/ForgotPassword';
 import Quiz from './assets/pages/Quiz';
@@ -30,6 +31,7 @@ export const App = () => {
       <Routes>
         <Route path="/" element={<Promo />} />           {/* Home page */}
         <Route path="/login" element={<Login />} />      {/* Login page */}
+        <Route path="/login-debug" element={<LoginDebug />} /> {/* Login debug page */}
         <Route path="/signup" element={<Signup />} />    {/* Signup page */}
         <Route path="/forgot-password" element={<ForgotPassword />} /> {/* Forgot Password page */}
           <Route path="/quiz"element={<Quiz/>}/> {/*Quiz page*/}

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import "./Login.css";
 
 const LoginPage = () => {
@@ -51,7 +51,8 @@ const LoginPage = () => {
     setLoading(true);
 
     try {
-      console.log("🔍 Attempting login...");
+      console.log("🔍 Attempting login to:", `${BASE_URL}/login`);
+      console.log("📤 Login data:", { email, password: "***" });
       
       const response = await fetch(`${BASE_URL}/login`, {
         method: "POST",
@@ -62,24 +63,62 @@ const LoginPage = () => {
         body: JSON.stringify({ email, password }),
       });
 
+      console.log("📡 Response status:", response.status);
+      console.log("📡 Response headers:", response.headers);
+
+      if (!response.ok) {
+        // Handle non-200 responses
+        let errorData;
+        try {
+          errorData = await response.json();
+        } catch (parseError) {
+          console.error("Failed to parse error response:", parseError);
+          errorData = { message: `HTTP ${response.status} - ${response.statusText}` };
+        }
+        console.log("❌ Error response:", errorData);
+        setError(errorData.message || `Login failed (${response.status})`);
+        return;
+      }
+
       const data = await response.json();
       console.log("📄 Login response:", data);
 
-      if (response.ok && data.success) {
-        setSuccess("Login successful! Redirecting...");
+      if (data.success && data.token) {
+        setSuccess("✅ Login successful! Redirecting...");
+        
+        // Store user data
         localStorage.setItem('authToken', data.token);
         localStorage.setItem('userEmail', email);
-        localStorage.setItem('userRole', data.user.role);
+        if (data.user && data.user.role) {
+          localStorage.setItem('userRole', data.user.role);
+        }
+        
+        console.log("💾 Stored in localStorage:", {
+          token: data.token ? "✅" : "❌",
+          email: email,
+          role: data.user?.role || "not provided"
+        });
         
         setTimeout(() => {
-          navigate("/dashboard", { state: { email, user: data.user } });
-        }, 1000);
+          navigate("/dashboard", { 
+            state: { 
+              email, 
+              user: data.user,
+              loginSuccess: true 
+            } 
+          });
+        }, 1500);
       } else {
-        setError(data.message || "Login failed. Please check your credentials.");
+        setError(data.message || "Login failed. Invalid response from server.");
       }
     } catch (error) {
       console.error("🚨 Login error:", error);
-      setError("Network error. Please check your connection and try again.");
+      
+      if (error.name === 'TypeError' && error.message.includes('fetch')) {
+        setError(`❌ Cannot connect to server. Please check if the backend is running at ${BASE_URL}`);
+      } else {
+        setError(`❌ Network error: ${error.message}`);
+      }
     } finally {
       setLoading(false);
     }
@@ -117,12 +156,14 @@ const LoginPage = () => {
     setLoading(true);
 
     try {
-      console.log("🔍 Attempting signup...");
+      console.log("🔍 Attempting signup to:", `${BASE_URL}/register`);
       
       const signupData = { email, password, role };
       if (role === "admin") {
         signupData.adminKey = adminKey;
       }
+
+      console.log("📤 Signup data:", { ...signupData, password: "***", adminKey: adminKey ? "***" : undefined });
 
       const response = await fetch(`${BASE_URL}/register`, {
         method: "POST",
@@ -133,24 +174,54 @@ const LoginPage = () => {
         body: JSON.stringify(signupData),
       });
 
+      console.log("📡 Response status:", response.status);
+
+      if (!response.ok) {
+        let errorData;
+        try {
+          errorData = await response.json();
+        } catch (parseError) {
+          console.error("Failed to parse error response:", parseError);
+          errorData = { message: `HTTP ${response.status} - ${response.statusText}` };
+        }
+        console.log("❌ Error response:", errorData);
+        setError(errorData.message || `Registration failed (${response.status})`);
+        return;
+      }
+
       const data = await response.json();
       console.log("📄 Signup response:", data);
 
-      if (response.ok && data.success) {
-        setSuccess("Account created successfully! Redirecting...");
+      if (data.success && data.token) {
+        setSuccess("✅ Account created successfully! Redirecting...");
+        
+        // Store user data
         localStorage.setItem('authToken', data.token);
         localStorage.setItem('userEmail', email);
-        localStorage.setItem('userRole', data.user.role);
+        if (data.user && data.user.role) {
+          localStorage.setItem('userRole', data.user.role);
+        }
         
         setTimeout(() => {
-          navigate("/dashboard", { state: { email, user: data.user } });
-        }, 1000);
+          navigate("/dashboard", { 
+            state: { 
+              email, 
+              user: data.user,
+              signupSuccess: true 
+            } 
+          });
+        }, 1500);
       } else {
-        setError(data.message || "Registration failed. Please try again.");
+        setError(data.message || "Registration failed. Invalid response from server.");
       }
     } catch (error) {
       console.error("🚨 Signup error:", error);
-      setError("Network error. Please check your connection and try again.");
+      
+      if (error.name === 'TypeError' && error.message.includes('fetch')) {
+        setError(`❌ Cannot connect to server. Please check if the backend is running at ${BASE_URL}`);
+      } else {
+        setError(`❌ Network error: ${error.message}`);
+      }
     } finally {
       setLoading(false);
     }
@@ -182,13 +253,13 @@ const LoginPage = () => {
       const data = await response.json();
 
       if (response.ok && data.success) {
-        setSuccess("Password reset instructions sent to your email!");
+        setSuccess("✅ Password reset instructions sent to your email!");
       } else {
         setError(data.message || "Failed to send reset email");
       }
     } catch (error) {
       console.error("🚨 Forgot password error:", error);
-      setError("Network error. Please try again.");
+      setError("❌ Network error. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -200,6 +271,8 @@ const LoginPage = () => {
     setLoading(true);
     
     try {
+      console.log("🔧 Testing connection to backend...");
+      
       const response = await fetch('http://localhost:5001/', {
         method: 'GET',
         headers: { 'Accept': 'application/json' }
@@ -207,11 +280,26 @@ const LoginPage = () => {
       
       if (response.ok) {
         const data = await response.json();
+        console.log("✅ Connection test successful:", data);
         setSuccess(`✅ Backend connection successful! Server: ${data.message || 'Running'}`);
+        
+        // Test auth endpoint
+        try {
+          const authTest = await fetch(`${BASE_URL}/login`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email: 'test@test.com', password: 'test' })
+          });
+          console.log("🔐 Auth endpoint test status:", authTest.status);
+        } catch (authError) {
+          console.log("🔐 Auth endpoint test failed:", authError.message);
+        }
+        
       } else {
         setError(`❌ Backend responded with status: ${response.status}`);
       }
     } catch (error) {
+      console.error("🔧 Connection test error:", error);
       setError(`❌ Cannot connect to backend: ${error.message}`);
     } finally {
       setLoading(false);
@@ -226,7 +314,18 @@ const LoginPage = () => {
     setRole('user');
     setAdminKey('');
     clearMessages();
-    setSuccess('Demo credentials loaded! You can now login or signup.');
+    setSuccess('✅ Demo credentials loaded! You can now login.');
+  };
+
+  // Use admin credentials
+  const useAdminCredentials = () => {
+    setEmail('admin@example.com');
+    setPassword('admin123');
+    setConfirmPassword('admin123');
+    setRole('admin');
+    setAdminKey('Assa1andonly');
+    clearMessages();
+    setSuccess('✅ Admin credentials loaded! You can now login.');
   };
 
   // Reset form
@@ -344,6 +443,9 @@ const LoginPage = () => {
                 onChange={(e) => setAdminKey(e.target.value)}
                 disabled={loading}
               />
+              <small style={{ color: '#666', fontSize: '12px' }}>
+                Admin key: Assa1andonly
+              </small>
             </div>
           )}
 
@@ -428,20 +530,26 @@ const LoginPage = () => {
               className="btn utility"
               disabled={loading}
             >
-              📝 Use Demo Account
+              👤 Demo User
             </button>
             <button 
-              onClick={() => navigate('/dashboard')} 
+              onClick={useAdminCredentials} 
               className="btn utility"
               disabled={loading}
             >
-              🏠 Skip to Dashboard
+              👑 Admin User
             </button>
+            <Link to="/dashboard" className="btn utility">
+              🏠 Skip to Dashboard
+            </Link>
           </div>
         </div>
 
         <div className="login-footer">
           <p>🚗 Practice makes perfect! Start your driving test preparation today.</p>
+          <p style={{ fontSize: '12px', color: '#999', marginTop: '10px' }}>
+            Backend: {BASE_URL} | Frontend: {window.location.origin}
+          </p>
         </div>
       </div>
     </div>
