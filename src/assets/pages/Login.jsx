@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import { AUTH_BASE_URL, API_BASE_URL } from "../../config/api";
 import "./Login.css";
 
 const LoginPage = () => {
@@ -15,7 +16,7 @@ const LoginPage = () => {
   const [success, setSuccess] = useState("");
   const navigate = useNavigate();
 
-  const BASE_URL = "http://localhost:5001/api/auth";
+  const BASE_URL = AUTH_BASE_URL;
 
   // Clear messages
   const clearMessages = () => {
@@ -273,7 +274,7 @@ const LoginPage = () => {
     try {
       console.log("🔧 Testing connection to backend...");
       
-      const response = await fetch('http://localhost:5001/', {
+      const response = await fetch(API_BASE_URL, {
         method: 'GET',
         headers: { 'Accept': 'application/json' }
       });

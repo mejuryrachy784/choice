@@ -16,25 +16,52 @@ const app = express();
 const PORT = process.env.PORT || 5001;
 
 // Middleware
-app.use(cors({
-  origin: [
-    'http://localhost:5173', 
-    'http://localhost:5174',  // Added for Vite
-    'http://localhost:3000', 
-    'http://localhost:5175',
-    'http://127.0.0.1:5173',
-    'http://127.0.0.1:5174',  // Added for Vite
-    'http://127.0.0.1:3000',
-    'http://127.0.0.1:5175',
-    'http://[::1]:5173',
-    'http://[::1]:5174',      // Added for Vite
-    'http://[::1]:3000',
-    'http://[::1]:5175'
-  ],
+// CORS configuration for development and production
+const corsOptions = {
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+    
+    const allowedOrigins = [
+      // Development URLs
+      'http://localhost:5173', 
+      'http://localhost:5174',
+      'http://localhost:3000', 
+      'http://localhost:5175',
+      'http://127.0.0.1:5173',
+      'http://127.0.0.1:5174',
+      'http://127.0.0.1:3000',
+      'http://127.0.0.1:5175',
+      'http://[::1]:5173',
+      'http://[::1]:5174',
+      'http://[::1]:3000',
+      'http://[::1]:5175',
+      // Production URLs (will be updated after deployment)
+      'https://driving-license-quiz.vercel.app',
+      'https://driving-license-quiz-git-main-mejuryrachy784.vercel.app',
+      // Add your actual Vercel URLs here after deployment
+    ];
+    
+    // In production, also allow any vercel.app subdomain for this project
+    if (process.env.NODE_ENV === 'production') {
+      if (origin.includes('vercel.app') && origin.includes('driving-license-quiz')) {
+        return callback(null, true);
+      }
+    }
+    
+    if (allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      console.log('CORS blocked origin:', origin);
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'Accept']
-}));
+};
+
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
