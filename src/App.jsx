@@ -1,5 +1,5 @@
 import React from 'react';
-import './app.css';
+// import './app.css';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Promo from './assets/pages/Promo';
 import Login from './assets/pages/Login';
@@ -24,6 +24,7 @@ import TestConnection from "./assets/pages/TestConnection";
 import OTPVerify from './assets/pages/Otpverify';
 import Details from './assets/Component/Details';
 import TestAuth from './assets/pages/TestAuth';
+import "./App.css"
 
 export const App = () => {
   return (
