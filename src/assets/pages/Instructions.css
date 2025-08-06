@@ -1,0 +1,182 @@
+/* Instructions.css */
+
+.instructions-container {
+  max-width: 800px;
+  margin: 20px auto;
+  padding: 30px;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  border-radius: 20px;
+  box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #333;
+  min-height: 500px;
+}
+
+.instructions-container h2 {
+  text-align: center;
+  color: #1a237e;
+  font-size: 32px;
+  margin-bottom: 30px;
+  font-weight: 700;
+}
+
+.instruction-section {
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 15px;
+  padding: 25px;
+  margin-bottom: 20px;
+  border-left: 5px solid #3f51b5;
+}
+
+.instruction-section h3 {
+  color: #1a237e;
+  font-size: 24px;
+  margin-bottom: 15px;
+  font-weight: 600;
+}
+
+.instruction-section ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.instruction-section li {
+  background: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  padding: 12px 15px;
+  margin-bottom: 10px;
+  color: #000;
+  font-size: 16px;
+  position: relative;
+  padding-left: 40px;
+}
+
+.instruction-section li:before {
+  content: "✓";
+  position: absolute;
+  left: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #4caf50;
+  font-weight: bold;
+  font-size: 18px;
+}
+
+.instruction-section li:hover {
+  background: #e3f2fd;
+  border-color: #2196f3;
+  transform: translateY(-2px);
+  transition: all 0.3s ease;
+}
+
+.button-group {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  margin-top: 40px;
+  flex-wrap: wrap;
+}
+
+.left-button, .right-button {
+  background: linear-gradient(45deg, #3f51b5, #5c6bc0);
+  color: white;
+  border: none;
+  border-radius: 25px;
+  padding: 15px 30px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  display: inline-block;
+  min-width: 200px;
+}
+
+.left-button:hover, .right-button:hover {
+  background: linear-gradient(45deg, #5c6bc0, #3f51b5);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(63, 81, 181, 0.3);
+}
+
+.right-button {
+  background: linear-gradient(45deg, #4caf50, #66bb6a);
+}
+
+.right-button:hover {
+  background: linear-gradient(45deg, #66bb6a, #4caf50);
+  box-shadow: 0 6px 20px rgba(76, 175, 80, 0.3);
+}
+
+/* Loading and Error States */
+.loading, .error {
+  text-align: center;
+  padding: 40px;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 15px;
+}
+
+.loading h2, .error h2 {
+  color: #1a237e;
+  margin-bottom: 20px;
+}
+
+.spinner {
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #3f51b5;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+  margin: 20px auto;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.retry-btn {
+  background: linear-gradient(45deg, #f44336, #ff7043);
+  color: white;
+  border: none;
+  border-radius: 25px;
+  padding: 12px 25px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.retry-btn:hover {
+  background: linear-gradient(45deg, #ff7043, #f44336);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(244, 67, 54, 0.3);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .instructions-container {
+    margin: 10px;
+    padding: 20px;
+  }
+  
+  .instructions-container h2 {
+    font-size: 24px;
+  }
+  
+  .instruction-section h3 {
+    font-size: 20px;
+  }
+  
+  .button-group {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .left-button, .right-button {
+    width: 100%;
+    max-width: 300px;
+  }
+}

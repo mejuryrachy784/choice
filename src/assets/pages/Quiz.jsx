@@ -1,382 +1,659 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './Quiz.css';
 
-const questions = [
-  {
-    id: 1,
-    text: 'What should you do when approaching a zebra crossing?',
-    options: {
-      a: 'Speed up to cross before pedestrians',
-      b: 'Stop and wave pedestrians across',
-      c: 'Slow down and prepare to stop',
-      d: 'Honk to warn pedestrians',
-    },
-    correct: 'c',
-  },
-  {
-    id: 2,
-    text: 'What does a red traffic light mean?',
-    options: {
-      a: 'Go if it’s clear',
-      b: 'Slow down',
-      c: 'Stop',
-      d: 'Stop only for buses',
-    },
-    correct: 'c',
-  },
-  {
-    id: 3,
-    text: 'What does a solid white line on the road mean?',
-    options: {
-      a: 'You may overtake',
-      b: 'No overtaking',
-      c: 'One-way traffic',
-      d: 'Bus lane',
-    },
-    correct: 'b',
-  },
-  {
-    id: 4,
-    text: 'What is the legal blood alcohol concentration (BAC) limit for driving?',
-    options: {
-      a: '0.08%',
-      b: '0.05%',
-      c: '0.02%',
-      d: '0.10%',
-    },
-    correct: 'b',
-  },
-  {
-    id: 5,
-    text: 'What should you do when you see a yield sign?',
-    options: {
-      a: 'Stop regardless of traffic',
-      b: 'Give way to other vehicles and pedestrians',
-      c: 'Speed up to merge quickly',
-      d: 'Ignore it',
-    },
-    correct: 'b',
-  },
-  {
-    id: 6,
-    text: 'How far should you keep from the vehicle in front of you?',
-    options: {
-      a: 'At least one car length',
-      b: 'Two seconds behind',
-      c: 'Five seconds behind',
-      d: 'It doesn’t matter',
-    },
-    correct: 'b',
-  },
-  {
-    id: 7,
-    text: 'What does a flashing yellow traffic light mean?',
-    options: {
-      a: 'Stop completely',
-      b: 'Speed up to clear the intersection',
-      c: 'Proceed with caution',
-      d: 'Traffic light malfunction',
-    },
-    correct: 'c',
-  },
-  {
-    id: 8,
-    text: 'When can you use your horn?',
-    options: {
-      a: 'To greet a friend',
-      b: 'To warn others of danger',
-      c: 'When you are angry',
-      d: 'Anytime you want',
-    },
-    correct: 'b',
-  },
-  {
-    id: 9,
-    text: 'What does a double yellow line mean?',
-    options: {
-      a: 'You may overtake',
-      b: 'No parking allowed',
-      c: 'No overtaking allowed',
-      d: 'Bus lane only',
-    },
-    correct: 'c',
-  },
-  {
-    id: 10,
-    text: 'When parking uphill with a curb, which way should you turn your wheels?',
-    options: {
-      a: 'Toward the curb',
-      b: 'Away from the curb',
-      c: 'Straight ahead',
-      d: 'It doesn’t matter',
-    },
-    correct: 'b',
-  },
-  {
-    id: 11,
-    text: 'What does a green traffic light indicate?',
-    options: {
-      a: 'Go if safe',
-      b: 'Stop',
-      c: 'Yield',
-      d: 'Pedestrian crossing',
-    },
-    correct: 'a',
-  },
-  {
-    id: 12,
-    text: 'What should you do if you see an emergency vehicle with flashing lights behind you?',
-    options: {
-      a: 'Speed up and keep driving',
-      b: 'Stop immediately where you are',
-      c: 'Move to the side and stop',
-      d: 'Ignore it',
-    },
-    correct: 'c',
-  },
-  {
-    id: 13,
-    text: 'What is the meaning of a triangular traffic sign?',
-    options: {
-      a: 'Warning',
-      b: 'Stop',
-      c: 'Yield',
-      d: 'Information',
-    },
-    correct: 'a',
-  },
-  {
-    id: 14,
-    text: 'When is it safe to overtake another vehicle?',
-    options: {
-      a: 'When the road ahead is clear and allowed',
-      b: 'On a solid yellow line',
-      c: 'Near a pedestrian crossing',
-      d: 'At intersections',
-    },
-    correct: 'a',
-  },
-  {
-    id: 15,
-    text: 'What does a broken white line on the road mean?',
-    options: {
-      a: 'You may change lanes',
-      b: 'No changing lanes',
-      c: 'Bus lane',
-      d: 'Pedestrian crossing',
-    },
-    correct: 'a',
-  },
-  {
-    id: 16,
-    text: 'When should you use your headlights?',
-    options: {
-      a: 'Only at night',
-      b: 'During rain, fog, or poor visibility',
-      c: 'Only in tunnels',
-      d: 'Whenever you want',
-    },
-    correct: 'b',
-  },
-  {
-    id: 17,
-    text: 'What is the main purpose of seat belts?',
-    options: {
-      a: 'To keep you comfortable',
-      b: 'To prevent ejection during a crash',
-      c: 'To avoid speeding tickets',
-      d: 'To avoid airbags deploying',
-    },
-    correct: 'b',
-  },
-  {
-    id: 18,
-    text: 'What should you do at a stop sign?',
-    options: {
-      a: 'Slow down and proceed',
-      b: 'Stop completely and look both ways',
-      c: 'Stop only if other cars are present',
-      d: 'Yield to pedestrians only',
-    },
-    correct: 'b',
-  },
-  {
-    id: 19,
-    text: 'What does a no-entry sign indicate?',
-    options: {
-      a: 'Do not enter the road',
-      b: 'No parking here',
-      c: 'Pedestrian zone',
-      d: 'Bus lane',
-    },
-    correct: 'a',
-  },
-  {
-    id: 20,
-    text: 'What is the correct hand signal for a left turn?',
-    options: {
-      a: 'Arm straight out horizontally',
-      b: 'Arm bent upward',
-      c: 'Arm bent downward',
-      d: 'Waving arm',
-    },
-    correct: 'a',
-  },
-];
+const API_BASE_URL = 'http://localhost:5001/api';
 
-const DriveLessonQuiz = () => {
-  const [current, setCurrent] = useState(0);
-  const [selected, setSelected] = useState('');
+const DrivingLicenseQuiz = () => {
+  const navigate = useNavigate();
+  
+  // State management
+  const [questions, setQuestions] = useState([]);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [selectedAnswer, setSelectedAnswer] = useState(null);
+  const [userAnswers, setUserAnswers] = useState([]);
   const [score, setScore] = useState(0);
   const [showScore, setShowScore] = useState(false);
   const [showFeedback, setShowFeedback] = useState(false);
-  const [timeLeft, setTimeLeft] = useState(1800);
-  const [showStartMsg, setShowStartMsg] = useState(false);
+  const [timeLeft, setTimeLeft] = useState(1800); // 30 minutes
+  const [quizStarted, setQuizStarted] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
   const [reviewMode, setReviewMode] = useState(false);
-  const [userAnswers, setUserAnswers] = useState([]);
-  const timerStarted = useRef(false);
-  const intervalRef = useRef(null);
+  const [quizCompleted, setQuizCompleted] = useState(false);
+  const [quizResults, setQuizResults] = useState(null);
+  const [mistakes, setMistakes] = useState([]);
+  const [speechVolume, setSpeechVolume] = useState(1.0); // Volume control state
+  const [autoSpeak, setAutoSpeak] = useState(true); // Auto-speak questions enabled by default
+  
+  const timerRef = useRef(null);
+  const startTime = useRef(null);
 
-  const formatTime = () => {
-    const mins = Math.floor(timeLeft / 60);
-    const secs = timeLeft % 60;
+  // Format time display
+  const formatTime = (seconds) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
     return `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
   };
 
-  const speak = (text) => {
-    const synth = window.speechSynthesis;
-    const utter = new SpeechSynthesisUtterance(text);
-    utter.lang = 'en-US';
-    synth.cancel();
-    synth.speak(utter);
+  // Text-to-speech function with maximum loudness
+  const speak = (text, isQuestion = false) => {
+    if ('speechSynthesis' in window) {
+      const synth = window.speechSynthesis;
+      synth.cancel(); // Cancel any ongoing speech
+      
+      // Create multiple utterances for extra loudness
+      const speakLoud = (textToSpeak, delay = 0) => {
+        setTimeout(() => {
+          const utterance = new SpeechSynthesisUtterance(textToSpeak);
+          utterance.lang = 'en-US';
+          utterance.rate = 0.7; // Optimal speed for clarity
+          utterance.volume = 1.0; // Always maximum volume
+          utterance.pitch = 1.2; // Higher pitch for better audibility
+          
+          // Find the best voice (usually the first one is loudest)
+          const voices = synth.getVoices();
+          if (voices.length > 0) {
+            // Try to find a female voice (usually louder) or use the first available
+            const preferredVoice = voices.find(voice => 
+              voice.name.includes('Female') || 
+              voice.name.includes('Zira') || 
+              voice.name.includes('Hazel') ||
+              voice.name.includes('Microsoft')
+            ) || voices[0];
+            utterance.voice = preferredVoice;
+          }
+          
+          synth.speak(utterance);
+        }, delay);
+      };
+      
+      // Enhance text with emphasis and repetition for important words
+      let enhancedText = text
+        .replace(/\b(STOP|YIELD|SPEED LIMIT|WARNING|DANGER|CAUTION|NO|YES|MUST|SHOULD|ALWAYS|NEVER)\b/gi, 'ATTENTION! $1! $1!')
+        .replace(/\b(\d+)\s*(mph|feet|yards|meters)\b/gi, '$1 $2! I repeat, $1 $2!')
+        .replace(/\?/g, '? Listen carefully:')
+        .replace(/\./g, '. ');
+      
+      // Add question prefix for questions
+      if (isQuestion) {
+        enhancedText = `Question ${currentIndex + 1}. LISTEN CAREFULLY! ${enhancedText}`;
+      }
+      
+      // Speak the enhanced text with maximum volume
+      speakLoud(enhancedText);
+      
+      // Add echo effect for extra emphasis on questions
+      if (isQuestion) {
+        speakLoud(text, 300);
+      }
+    }
   };
 
-  const handleSubmit = () => {
-    if (!timerStarted.current) {
-      timerStarted.current = true;
-      setShowStartMsg(true);
-      setTimeout(() => setShowStartMsg(false), 2000);
-
-      intervalRef.current = setInterval(() => {
-        setTimeLeft((prev) => {
-          if (prev <= 1) {
-            clearInterval(intervalRef.current);
-            setShowScore(true);
-            return 0;
+  // Extra loud text-to-speech function
+  const speakExtraLoud = (text) => {
+    if ('speechSynthesis' in window) {
+      const synth = window.speechSynthesis;
+      synth.cancel(); // Cancel any ongoing speech
+      
+      // Create an even more enhanced version for maximum loudness
+      const speakVeryLoud = (textToSpeak, delay = 0) => {
+        setTimeout(() => {
+          const utterance = new SpeechSynthesisUtterance(textToSpeak);
+          utterance.lang = 'en-US';
+          utterance.rate = 0.5; // Even slower for maximum clarity
+          utterance.volume = 1.0; // Maximum volume
+          utterance.pitch = 1.4; // Even higher pitch
+          
+          // Find the loudest voice available
+          const voices = synth.getVoices();
+          if (voices.length > 0) {
+            // Prefer female voices as they tend to be louder and clearer
+            const loudestVoice = voices.find(voice => 
+              voice.name.includes('Zira') || 
+              voice.name.includes('Hazel') ||
+              voice.name.includes('Female') ||
+              voice.name.includes('Microsoft')
+            ) || voices[0];
+            utterance.voice = loudestVoice;
           }
-          return prev - 1;
-        });
-      }, 1000);
+          
+          synth.speak(utterance);
+        }, delay);
+      };
+      
+      // Triple emphasis on important words
+      let superEnhancedText = text
+        .replace(/\b(STOP|YIELD|SPEED LIMIT|WARNING|DANGER|CAUTION|NO|YES|MUST|SHOULD|ALWAYS|NEVER)\b/gi, 'ATTENTION! $1! $1! $1!')
+        .replace(/\b(\d+)\s*(mph|feet|yards|meters)\b/gi, '$1 $2! I repeat, $1 $2!')
+        .replace(/\?/g, '? Listen carefully to this question:')
+        .replace(/\./g, '. Pay attention. ');
+      
+      // Speak with maximum emphasis
+      speakVeryLoud(`LISTEN CAREFULLY! ${superEnhancedText}`);
+      
+      // Add an echo effect for extra emphasis
+      speakVeryLoud(text, 200);
+    }
+  };
+
+  // Fetch quiz questions from backend
+  const fetchQuestions = async () => {
+    setLoading(true);
+    setError('');
+    
+    try {
+      const response = await fetch(`${API_BASE_URL}/quiz/questions/public?limit=25`);
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch questions');
+      }
+
+      const data = await response.json();
+      
+      if (data.success && data.questions && data.questions.length > 0) {
+        console.log('✅ Loaded questions:', data.questions.length);
+        setQuestions(data.questions);
+        setCurrentIndex(0);
+        setUserAnswers([]);
+        setScore(0);
+        setShowScore(false);
+        setQuizCompleted(false);
+        setReviewMode(false);
+      } else {
+        throw new Error('No questions available');
+      }
+    } catch (err) {
+      console.error('Error fetching questions:', err);
+      setError('Failed to load quiz questions. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Start quiz timer
+  const startQuiz = () => {
+    setQuizStarted(true);
+    startTime.current = Date.now();
+    
+    timerRef.current = setInterval(() => {
+      setTimeLeft(prev => {
+        if (prev <= 1) {
+          clearInterval(timerRef.current);
+          submitQuiz();
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+  };
+
+  // Submit quiz to backend
+  const submitQuiz = async () => {
+    if (timerRef.current) {
+      clearInterval(timerRef.current);
     }
 
-    const isCorrect = selected === questions[current].correct;
-    if (isCorrect) setScore((prev) => prev + 1);
+    const finalScore = calculateFinalScore();
+    const calculatedMistakes = calculateMistakes();
+    const timeSpent = startTime.current ? (Date.now() - startTime.current) / 1000 / 60 : 0;
 
-    setUserAnswers((prev) => [
-      ...prev,
-      { question: questions[current], selected },
-    ]);
+    try {
+      const quizData = {
+        answers: userAnswers,
+        score: finalScore,
+        total: questions.length,
+        timeSpent: Math.round(timeSpent * 100) / 100,
+        questions: questions,
+        mistakes: calculatedMistakes
+      };
 
-    setShowFeedback(true);
+      const response = await fetch(`${API_BASE_URL}/quiz/submit/public`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(quizData)
+      });
 
-    setTimeout(() => {
-      setShowFeedback(false);
-      setSelected('');
-      if (current + 1 < questions.length) {
-        setCurrent((prev) => prev + 1);
-      } else {
-        setShowScore(true);
-        clearInterval(intervalRef.current);
+      if (response.ok) {
+        const result = await response.json();
+        setQuizResults(result.results);
+        console.log('✅ Quiz results submitted:', result);
       }
-    }, 1500);
+    } catch (err) {
+      console.error('❌ Error submitting quiz:', err);
+    }
+
+    setScore(finalScore);
+    setMistakes(calculatedMistakes);
+    setShowScore(true);
+    setQuizCompleted(true);
+
+    // Save mistakes and stats to localStorage for the Mistake page
+    localStorage.setItem('recentQuizMistakes', JSON.stringify(calculatedMistakes));
+    localStorage.setItem('recentQuizStats', JSON.stringify({
+      totalQuestions: questions.length,
+      correctAnswers: finalScore,
+      scorePercent: Math.round((finalScore / questions.length) * 100)
+    }));
   };
 
-  useEffect(() => {
-    return () => clearInterval(intervalRef.current);
-  }, []);
+  // Calculate final score
+  const calculateFinalScore = () => {
+    let correctCount = 0;
+    for (let i = 0; i < Math.min(userAnswers.length, questions.length); i++) {
+      if (userAnswers[i] === questions[i].correctAnswer) {
+        correctCount++;
+      }
+    }
+    return correctCount;
+  };
 
-  const handleReveal = () => {
+  // Calculate mistakes
+  const calculateMistakes = () => {
+    const mistakesList = [];
+    for (let i = 0; i < Math.min(userAnswers.length, questions.length); i++) {
+      if (userAnswers[i] !== questions[i].correctAnswer) {
+        mistakesList.push({
+          questionIndex: i,
+          question: questions[i],
+          userAnswer: userAnswers[i],
+          correctAnswer: questions[i].correctAnswer
+        });
+      }
+    }
+    return mistakesList;
+  };
+
+  // Handle answer selection
+  const handleAnswerSelect = (answerId) => {
+    if (!showFeedback) {
+      setSelectedAnswer(answerId);
+    }
+  };
+
+  // Handle answer submission
+  const handleSubmitAnswer = () => {
+    if (selectedAnswer === null) return;
+
+    if (!quizStarted) {
+      startQuiz();
+    }
+    
+    // Update user answers
+    const newUserAnswers = [...userAnswers];
+    newUserAnswers[currentIndex] = selectedAnswer;
+    setUserAnswers(newUserAnswers);
+
+    // Show feedback
+    setShowFeedback(true);
+
+    // Auto-advance after 2 seconds
+    setTimeout(() => {
+      setShowFeedback(false);
+      setSelectedAnswer(null);
+      
+      if (currentIndex + 1 < questions.length) {
+        setCurrentIndex(currentIndex + 1);
+      } else {
+        // Quiz completed
+        submitQuiz();
+      }
+    }, 2000);
+  };
+
+  // Start new quiz
+  const startNewQuiz = () => {
+    fetchQuestions();
+    setTimeLeft(1800);
+    setQuizStarted(false);
+    if (timerRef.current) {
+      clearInterval(timerRef.current);
+    }
+  };
+
+  // Show review mode
+  const showReview = () => {
     setReviewMode(true);
   };
 
-  if (showScore && reviewMode) {
+  // Go back to results
+  const backToResults = () => {
+    setReviewMode(false);
+  };
+
+  // Load questions on component mount
+  useEffect(() => {
+    fetchQuestions();
+    
+    return () => {
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+      }
+    };
+  }, []);
+
+  // Auto-speak questions when they change
+  useEffect(() => {
+    if (autoSpeak && questions.length > 0 && currentIndex < questions.length && !showScore && !reviewMode) {
+      const currentQuestion = questions[currentIndex];
+      if (currentQuestion && currentQuestion.questionText) {
+        // Delay speech slightly to ensure UI is ready
+        setTimeout(() => {
+          speak(currentQuestion.questionText, true);
+        }, 500);
+      }
+    }
+  }, [currentIndex, questions, autoSpeak, showScore, reviewMode]);
+
+  // Loading state
+  if (loading) {
     return (
       <div className="quiz-container">
-        <h2>Review Your Answers</h2>
-        <p>Your score: {score} / {questions.length}</p>
-        {userAnswers.map(({ question, selected }, index) => {
-          const isCorrect = selected === question.correct;
-          return (
-            <div key={index} className={`review-question ${isCorrect ? 'correct' : 'incorrect'}`}>
-              <p><strong>Q{index + 1}:</strong> {question.text}</p>
-              <p>Your answer: <strong>{question.options[selected] || 'None'}</strong></p>
-              {!isCorrect && (
-                <p>Correct answer: <strong>{question.options[question.correct]}</strong></p>
-              )}
-              <hr />
+        <div className="loading">
+          <h2>🚗 Loading Driving License Quiz...</h2>
+          <p>Preparing 25 questions from our database of 250 questions</p>
+          <div className="spinner"></div>
+        </div>
+      </div>
+    );
+  }
+
+  // Error state
+  if (error) {
+    return (
+      <div className="quiz-container">
+        <div className="error">
+          <h2>❌ Error</h2>
+          <p>{error}</p>
+          <button onClick={fetchQuestions} className="retry-btn">
+            🔄 Try Again
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  // Review mode
+  if (reviewMode && questions.length > 0) {
+    return (
+      <div className="quiz-container">
+        <div className="review-header">
+          <h2>📋 Review Your Answers</h2>
+          <p>Your Score: {score} / {questions.length} ({Math.round((score / questions.length) * 100)}%)</p>
+          <button onClick={backToResults} className="back-btn">← Back to Results</button>
+        </div>
+        
+        <div className="review-questions">
+          {questions.map((question, index) => {
+            const userAnswer = userAnswers[index];
+            const isCorrect = userAnswer === question.correctAnswer;
+            
+            return (
+              <div key={question.id || index} className={`review-question ${isCorrect ? 'correct' : 'incorrect'}`}>
+                <div className="question-header">
+                  <h3>Question {index + 1}</h3>
+                  <span className={`result-badge ${isCorrect ? 'correct' : 'incorrect'}`}>
+                    {isCorrect ? '✅ Correct' : '❌ Incorrect'}
+                  </span>
+                </div>
+                
+                <p className="question-text">{question.questionText}</p>
+                
+                <div className="answer-review">
+                  <p><strong>Your Answer:</strong> {userAnswer ? `${userAnswer}. ${question.options.find(opt => opt.id === userAnswer)?.text || 'Unknown'}` : 'No answer'}</p>
+                  {!isCorrect && (
+                    <p><strong>Correct Answer:</strong> {question.correctAnswer}. {question.options.find(opt => opt.id === question.correctAnswer)?.text}</p>
+                  )}
+                  {question.explanation && (
+                    <p className="explanation"><strong>Explanation:</strong> {question.explanation}</p>
+                  )}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+        
+        <div className="review-footer">
+          <button onClick={startNewQuiz} className="new-quiz-btn">
+            🆕 Take New Quiz
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  // Results screen
+  if (showScore && quizCompleted) {
+    const percentage = Math.round((score / questions.length) * 100);
+    const passed = percentage >= 70; // 70% to pass
+    
+    return (
+      <div className="quiz-container">
+        <div className="results-screen">
+          <h2>🏁 Quiz Complete!</h2>
+          
+          <div className={`score-display ${passed ? 'passed' : 'failed'}`}>
+            <div className="score-circle">
+              <span className="score-number">{score}</span>
+              <span className="score-total">/ {questions.length}</span>
             </div>
-          );
-        })}
+            <div className="percentage">{percentage}%</div>
+          </div>
+          
+          <div className="result-message">
+            {timeLeft > 0 ? (
+              <p className="time-bonus">🎉 Excellent! You finished with {formatTime(timeLeft)} remaining!</p>
+            ) : (
+              <p className="time-up">⏰ Time's up! But you completed the quiz.</p>
+            )}
+            
+            {passed ? (
+              <p className="pass-message">🎊 Congratulations! You passed the driving license quiz!</p>
+            ) : (
+              <p className="fail-message">📚 Keep studying! You need 70% to pass.</p>
+            )}
+          </div>
+          
+          <div className="quiz-summary">
+            <div className="summary-stats">
+              <div className="stat-item">
+                <span className="stat-number">{score}</span>
+                <span className="stat-label">Correct</span>
+              </div>
+              <div className="stat-item">
+                <span className="stat-number">{mistakes.length}</span>
+                <span className="stat-label">Mistakes</span>
+              </div>
+              <div className="stat-item">
+                <span className="stat-number">{questions.length}</span>
+                <span className="stat-label">Total</span>
+              </div>
+            </div>
+          </div>
+          
+          <div className="result-actions">
+            <button onClick={showReview} className="review-btn">
+              🔍 Review All Answers
+            </button>
+            <button onClick={() => navigate('/history')} className="history-btn">
+              📊 View History
+            </button>
+            <button onClick={() => navigate('/mistake')} className="mistakes-btn">
+              ❌ View Mistakes
+            </button>
+            <button onClick={startNewQuiz} className="new-quiz-btn">
+              🆕 Take New Quiz
+            </button>
+          </div>
+        </div>
       </div>
     );
   }
 
-  if (showScore) {
+  // No questions loaded
+  if (questions.length === 0) {
     return (
       <div className="quiz-container">
-        <h2>Quiz Complete</h2>
-        <p>Your score: {score} / {questions.length}</p>
-        {timeLeft > 0 ? (
-          <p className="success">🎉 Excellent! You finished in time!</p>
-        ) : (
-          <p className="error">⏰ You ran out of time!</p>
-        )}
-        <button onClick={handleReveal}>🔍 Reveal Mistakes</button>
+        <div className="no-questions">
+          <h2>📝 No Questions Available</h2>
+          <p>Unable to load quiz questions.</p>
+          <button onClick={fetchQuestions} className="retry-btn">
+            🔄 Reload Questions
+          </button>
+        </div>
       </div>
     );
   }
 
-  const currentQ = questions[current];
-
+  // Quiz interface
+  const currentQuestion = questions[currentIndex];
+  
   return (
     <div className="quiz-container">
-      <h2>Driving Lesson Oral Quiz</h2>
-      <div className="timer">Time Left: {formatTime()}</div>
-      {showStartMsg && <p className="start-msg">🚦 Your time starts now!</p>}
-      <p><strong>Question {current + 1}:</strong> {currentQ.text}</p>
-      <button onClick={() => speak(currentQ.text)}>🔊 Speak Aloud</button>
-
-      <div className="options">
-        {Object.entries(currentQ.options).map(([key, val]) => {
-          const isSelected = selected === key;
-          const isCorrect = key === currentQ.correct;
-
-          let className = '';
-          if (showFeedback && isSelected && isCorrect) className = 'correct';
-          else if (showFeedback && isSelected && !isCorrect) className = 'incorrect';
-
-          return (
-            <label key={key} className={`option ${className}`}>
+      <div className="quiz-header">
+        <h2>🚗 Driving License Quiz</h2>
+        <div className="quiz-info">
+          <div className="timer">
+            ⏱️ Time: {formatTime(timeLeft)}
+          </div>
+          <div className="progress">
+            📊 Question {currentIndex + 1} of {questions.length}
+          </div>
+        </div>
+        
+        {/* Voice Controls */}
+        <div className="voice-controls">
+          <div className="voice-settings">
+            <label className="auto-speak-toggle">
               <input
-                type="radio"
-                name="answer"
-                value={key}
-                checked={isSelected}
-                disabled={showFeedback}
-                onChange={(e) => setSelected(e.target.value)}
+                type="checkbox"
+                checked={autoSpeak}
+                onChange={(e) => setAutoSpeak(e.target.checked)}
               />
-              <span>{key.toUpperCase()}. {val}</span>
+              🔊 Auto-Speak Questions
             </label>
-          );
-        })}
+            
+            <div className="volume-control">
+              <label>🔊 Volume:</label>
+              <input
+                type="range"
+                min="0.1"
+                max="1.0"
+                step="0.1"
+                value={speechVolume}
+                onChange={(e) => setSpeechVolume(parseFloat(e.target.value))}
+                className="volume-slider"
+              />
+              <span className="volume-display">{Math.round(speechVolume * 100)}%</span>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <button className="submit-btn" onClick={handleSubmit} disabled={!selected || showFeedback}>
-        Submit Answer
-      </button>
+      {!quizStarted && (
+        <div className="start-message">
+          <p>🚦 Click "Submit Answer" to start your 30-minute timer!</p>
+        </div>
+      )}
+
+      <div className="question-section">
+        <div className="question-header">
+          <h3>Question {currentIndex + 1}</h3>
+          <div className="audio-controls">
+            <button 
+              onClick={() => speak(currentQuestion.questionText, true)} 
+              className="speak-btn"
+              title="Read question aloud"
+            >
+              🔊 Speak Question
+            </button>
+            <button 
+              onClick={() => speakExtraLoud(currentQuestion.questionText)} 
+              className="speak-loud-btn"
+              title="Read question EXTRA LOUD"
+            >
+              📢 SUPER LOUD!
+            </button>
+            <button 
+              onClick={() => {
+                const optionsText = currentQuestion.options.map((opt, idx) => 
+                  `Option ${opt.id}: ${opt.text}`
+                ).join('. ');
+                speak(`Question: ${currentQuestion.questionText}. Your options are: ${optionsText}`, true);
+              }}
+              className="speak-all-btn"
+              title="Read question and all options"
+            >
+              🎯 Speak All
+            </button>
+          </div>
+        </div>
+        
+        <p className="question-text">{currentQuestion.questionText}</p>
+        
+        <div className="options">
+          {currentQuestion.options.map((option) => {
+            let className = 'option';
+            
+            if (showFeedback && selectedAnswer !== null) {
+              if (option.id === currentQuestion.correctAnswer) {
+                className += ' correct';
+              } else if (option.id === selectedAnswer && option.id !== currentQuestion.correctAnswer) {
+                className += ' incorrect';
+              }
+            } else if (selectedAnswer === option.id) {
+              className += ' selected';
+            }
+            
+            return (
+              <button
+                key={option.id}
+                className={className}
+                onClick={() => handleAnswerSelect(option.id)}
+                disabled={showFeedback}
+              >
+                <span className="option-letter">{option.id}.</span>
+                <span className="option-text">{option.text}</span>
+              </button>
+            );
+          })}
+        </div>
+        
+        <div className="question-actions">
+          <button 
+            className="submit-btn"
+            onClick={handleSubmitAnswer}
+            disabled={selectedAnswer === null || showFeedback}
+          >
+            {showFeedback ? '⏳ Processing...' : '✅ Submit Answer'}
+          </button>
+        </div>
+        
+        {showFeedback && (
+          <div className={`feedback ${selectedAnswer === currentQuestion.correctAnswer ? 'correct' : 'incorrect'}`}>
+            {selectedAnswer === currentQuestion.correctAnswer ? (
+              <p>✅ Correct! Well done!</p>
+            ) : (
+              <p>❌ Incorrect. The correct answer is: {currentQuestion.options.find(opt => opt.id === currentQuestion.correctAnswer)?.text}</p>
+            )}
+            {currentQuestion.explanation && (
+              <p className="explanation">{currentQuestion.explanation}</p>
+            )}
+          </div>
+        )}
+      </div>
+      
+      <div className="progress-bar">
+        <div 
+          className="progress-fill" 
+          style={{ width: `${((currentIndex + 1) / questions.length) * 100}%` }}
+        ></div>
+      </div>
     </div>
   );
 };
 
-export default DriveLessonQuiz; 
 
+export default DrivingLicenseQuiz;     

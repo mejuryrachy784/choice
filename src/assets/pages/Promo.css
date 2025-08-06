@@ -1,7 +1,7 @@
 /* General container */
 .promo {
   font-family: Arial, sans-serif;
-  color: #222;
+  color: blue;
   width: 100%;
   margin: 0;
   padding: 0 2rem;
@@ -31,7 +31,7 @@
   justify-content: space-between;
   align-items: center;
   padding: 1rem 2rem;
-  background-color: #0a2472;
+  background-color: #2254eb;
   color: white;
   position: relative;
 }
@@ -69,14 +69,14 @@
 
 .promo-nav .primary {
   background-color: white;
-  color: #0a2472;
+  color: #1545d6;
   border: none;
 }
 
 .promo-nav .nav-btn:hover {
-  background-color: #001b55;
+  background-color: #3269df;
   color: white;
-  border-color: #001b55;
+  border-color: #2662e6;
 }
 
 /* Responsive menu */
@@ -91,7 +91,7 @@
     position: absolute;
     right: 1rem;
     top: 70px;
-    background-color: #0a2472;
+    background-color: #2758eb;
     padding: 1rem;
     border-radius: 8px;
     box-shadow: 0 4px 10px rgba(0,0,0,0.2);
@@ -290,7 +290,7 @@
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
   gap: 1rem;
-  background: #0a2472;
+  background: #2554e0;
   color: white;
   padding: 2rem 2rem;
   font-size: 0.9rem;

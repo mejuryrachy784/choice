@@ -1,12 +1,9 @@
 import React, { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
-import"./Service.css"
-// import { CheckCircle, XCircle, ArrowRight, Clock } from "lucide-react"
-// import TextToSpeechPlayer from "./TextToSpeechPlayer"
+import "./Service.css"
 
-const getRandomQuestions = () => {
-  // ...Keep your generateQuestions logic from your current code
-}
+// API Configuration
+const API_BASE_URL = 'http://localhost:5001/api';
 
 export default function QuizPage() {
   const [quizQuestions, setQuizQuestions] = useState([])
@@ -18,13 +15,119 @@ export default function QuizPage() {
   const [isPlaying, setIsPlaying] = useState(false)
   const [answers, setAnswers] = useState([])
   const [isLoading, setIsLoading] = useState(true)
+  const [error, setError] = useState('')
   const navigate = useNavigate()
 
+  // Fetch questions from backend
+  const fetchQuestions = async () => {
+    setIsLoading(true);
+    setError('');
+    
+    try {
+      const response = await fetch(`${API_BASE_URL}/quiz/questions/public?limit=25`);
+      
+      if (!response.ok) {
+        throw new Error('Failed to fetch questions');
+      }
+      
+      const data = await response.json();
+      
+      if (data.success && data.questions.length > 0) {
+        setQuizQuestions(data.questions);
+        console.log('✅ Loaded', data.questions.length, 'questions from backend');
+      } else {
+        throw new Error('No questions available');
+      }
+    } catch (err) {
+      console.error('❌ Error fetching questions:', err);
+      setError('Failed to load quiz questions. Please try again.');
+      
+      // Fallback to local questions if backend fails
+      console.log('⚠️ Using fallback local questions');
+      setQuizQuestions(getFallbackQuestions());
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Fallback questions in case backend is not available
+  const getFallbackQuestions = () => {
+    return [
+      {
+        id: 1,
+        questionText: "What does a red octagonal sign mean?",
+        category: "Road Signs",
+        options: [
+          { id: "A", text: "Stop completely" },
+          { id: "B", text: "Yield to traffic" },
+          { id: "C", text: "Slow down" },
+          { id: "D", text: "No entry" }
+        ],
+        correctAnswer: "A",
+        explanation: "A red octagonal sign always means STOP. You must come to a complete stop."
+      },
+      {
+        id: 2,
+        questionText: "What should you do when approaching a yellow traffic light?",
+        category: "Traffic Rules",
+        options: [
+          { id: "A", text: "Speed up to get through" },
+          { id: "B", text: "Prepare to stop safely" },
+          { id: "C", text: "Continue at same speed" },
+          { id: "D", text: "Honk your horn" }
+        ],
+        correctAnswer: "B",
+        explanation: "Yellow light means prepare to stop safely if you can do so without causing an accident."
+      },
+      {
+        id: 3,
+        questionText: "What is the typical speed limit in residential areas?",
+        category: "Speed Limits",
+        options: [
+          { id: "A", text: "15 mph" },
+          { id: "B", text: "25 mph" },
+          { id: "C", text: "35 mph" },
+          { id: "D", text: "45 mph" }
+        ],
+        correctAnswer: "B",
+        explanation: "Most residential areas have a speed limit of 25 mph for safety of pedestrians and children."
+      }
+    ];
+  };
+
+  // Submit quiz results to backend
+  const submitQuizResults = async (finalScore, finalAnswers) => {
+    try {
+      const quizData = {
+        answers: finalAnswers,
+        score: finalScore,
+        total: quizQuestions.length,
+        timeSpent: Math.round((quizQuestions.length * 30 - timeLeft) / 60 * 100) / 100,
+        questions: quizQuestions
+      };
+
+      const response = await fetch(`${API_BASE_URL}/quiz/submit/public`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(quizData)
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        console.log('✅ Quiz results submitted:', result);
+      } else {
+        console.log('⚠️ Failed to submit results to backend');
+      }
+    } catch (err) {
+      console.error('❌ Error submitting results:', err);
+    }
+  };
+
   useEffect(() => {
-    const randomQuestions = getRandomQuestions()
-    setQuizQuestions(randomQuestions)
-    setIsLoading(false)
-  }, [])
+    fetchQuestions();
+  }, []);
 
   const question = quizQuestions[currentQuestion]
   const progress = quizQuestions.length > 0 ? ((currentQuestion + 1) / quizQuestions.length) * 100 : 0
@@ -69,14 +172,21 @@ export default function QuizPage() {
     }
   }
 
-  const handleNextQuestion = () => {
+  const handleNextQuestion = async () => {
     if (currentQuestion < quizQuestions.length - 1) {
       setCurrentQuestion(currentQuestion + 1)
     } else {
+      // Quiz completed - submit results to backend
+      const finalScore = score + (selectedAnswer === question.correctAnswer ? 1 : 0);
+      const finalAnswers = [...answers, selectedAnswer || ""];
+      
+      await submitQuizResults(finalScore, finalAnswers);
+      
+      // Save to localStorage for compatibility
       const quizResults = {
-        score,
+        score: finalScore,
         total: quizQuestions.length,
-        answers,
+        answers: finalAnswers,
         questions: quizQuestions,
         date: new Date().toISOString(),
         timeSpent: (quizQuestions.length * 30 - timeLeft) / 60,
@@ -86,7 +196,7 @@ export default function QuizPage() {
       history.unshift(quizResults)
       localStorage.setItem("practiceHistory", JSON.stringify(history.slice(0, 50)))
 
-      navigate(`/results?score=${score}&total=${quizQuestions.length}`)
+      navigate(`/results?score=${finalScore}&total=${quizQuestions.length}`)
     }
   }
 
@@ -106,12 +216,28 @@ export default function QuizPage() {
     return "normal"
   }
 
+  // Error state
+  if (error && quizQuestions.length === 0) {
+    return (
+      <div className="error-screen">
+        <div className="error-content">
+          <h2>⚠️ Error Loading Quiz</h2>
+          <p>{error}</p>
+          <button onClick={fetchQuestions} className="retry-button">
+            🔄 Try Again
+          </button>
+        </div>
+      </div>
+    )
+  }
+
+  // Loading state
   if (isLoading || !question) {
     return (
       <div className="loading-screen">
         <div className="spinner" />
         <p>Preparing your personalized quiz...</p>
-        <small>Selecting 25 random questions from 250 available</small>
+        <small>Loading questions from database...</small>
       </div>
     )
   }
@@ -121,7 +247,7 @@ export default function QuizPage() {
       <header className="quiz-header">
         <h1>VID Oral Exam Practice</h1>
         <div className="quiz-header-meta">
-          <span><Clock size={16} /> {timeLeft}s</span>
+          <span>⏰ {timeLeft}s</span>
           <span>Question {currentQuestion + 1} of {quizQuestions.length}</span>
           <span>{question.category}</span>
         </div>
@@ -130,13 +256,6 @@ export default function QuizPage() {
 
       <main className="quiz-content">
         <h2>Question {currentQuestion + 1}</h2>
-
-        <TextToSpeechPlayer
-          text={question.questionText}
-          questionNumber={currentQuestion + 1}
-          category={question.category}
-          onPlayStateChange={setIsPlaying}
-        />
 
         <div className="question-text">
           {question.questionText}
@@ -151,8 +270,8 @@ export default function QuizPage() {
               className={`option-button ${getOptionStyle(option.id)}`}
             >
               <span><strong>{option.id}.</strong> {option.text}</span>
-              {showFeedback && option.id === question.correctAnswer && <CheckCircle size={20} color="green" />}
-              {showFeedback && option.id === selectedAnswer && option.id !== question.correctAnswer && <XCircle size={20} color="red" />}
+              {showFeedback && option.id === question.correctAnswer && <span className="correct-icon">✅</span>}
+              {showFeedback && option.id === selectedAnswer && option.id !== question.correctAnswer && <span className="incorrect-icon">❌</span>}
             </button>
           ))}
         </div>
@@ -161,11 +280,11 @@ export default function QuizPage() {
           <div className={`feedback-box ${selectedAnswer === question.correctAnswer ? "correct" : "incorrect"}`}>
             {selectedAnswer === question.correctAnswer ? (
               <>
-                <CheckCircle size={20} color="green" /> Correct!
+                <span className="feedback-icon">✅</span> Correct!
               </>
             ) : (
               <>
-                <XCircle size={20} color="red" /> Incorrect
+                <span className="feedback-icon">❌</span> Incorrect
               </>
             )}
             <p>{question.explanation}</p>
@@ -174,15 +293,21 @@ export default function QuizPage() {
 
         <div className="quiz-footer">
           <span>
-            Score: {score}/{currentQuestion + (showFeedback ? 1 : 0)} | Remaining:{" "}
-            {250 - JSON.parse(localStorage.getItem("usedQuestions") || "[]").length}
+            Score: {score}/{currentQuestion + (showFeedback ? 1 : 0)} | 
+            Questions: {quizQuestions.length}
           </span>
 
           {!showFeedback ? (
-            <button onClick={handleSubmitAnswer} disabled={!selectedAnswer}>Submit Answer</button>
+            <button 
+              onClick={handleSubmitAnswer} 
+              disabled={!selectedAnswer}
+              className="submit-button"
+            >
+              Submit Answer
+            </button>
           ) : (
-            <button onClick={handleNextQuestion}>
-              {currentQuestion < quizQuestions.length - 1 ? "Next Question" : "View Results"} <ArrowRight size={16} />
+            <button onClick={handleNextQuestion} className="next-button">
+              {currentQuestion < quizQuestions.length - 1 ? "Next Question ➡️" : "View Results 🎯"}
             </button>
           )}
         </div>
