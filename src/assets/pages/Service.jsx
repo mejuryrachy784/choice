@@ -3,7 +3,9 @@ import { useNavigate } from "react-router-dom"
 import "./Service.css"
 
 // API Configuration
-const API_BASE_URL = 'http://localhost:5001/api';
+
+const API_BASE_URL = 'https://choice-gneg.onrender.com/api';
+
 
 export default function QuizPage() {
   const [quizQuestions, setQuizQuestions] = useState([])
@@ -16,7 +18,57 @@ export default function QuizPage() {
   const [answers, setAnswers] = useState([])
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState('')
+
+  // Speech settings
+  const [autoSpeak, setAutoSpeak] = useState(true)
+  const [speechRate, setSpeechRate] = useState(0.6)
+  const [speechPitch, setSpeechPitch] = useState(1.3)
+
+  const stopSpeech = () => {
+    if (typeof window !== "undefined" && "speechSynthesis" in window) {
+      window.speechSynthesis.cancel()
+      setIsPlaying(false)
+    }
+  }
+
+  // Speak text loudly with preferred voice and full volume
+  const speakQuestionLoud = (text, extra = true) => {
+    if (typeof window === "undefined" || !("speechSynthesis" in window)) return
+    const synth = window.speechSynthesis
+    synth.cancel()
+
+    const makeUtterance = (t) => {
+      const u = new SpeechSynthesisUtterance(t)
+      u.lang = "en-US"
+      u.rate = speechRate
+      u.pitch = speechPitch
+      u.volume = 1.0
+      const voices = synth.getVoices()
+      const preferred = voices.find(v => /Microsoft|Zira|Hazel|Female/i.test(v.name)) || voices[0]
+      if (preferred) u.voice = preferred
+      u.onstart = () => setIsPlaying(true)
+      u.onend = () => setIsPlaying(false)
+      return u
+    }
+
+    const prefix = `Question ${currentQuestion + 1}. Listen carefully. `
+    synth.speak(makeUtterance(prefix + text))
+    if (extra) setTimeout(() => synth.speak(makeUtterance(text)), 250)
+  }
+
   const navigate = useNavigate()
+
+  // Auto-speak on question change
+  useEffect(() => {
+    if (!isLoading && quizQuestions.length > 0 && autoSpeak && !showFeedback) {
+      const q = quizQuestions[currentQuestion]
+      if (q?.questionText) {
+        const t = `Question ${currentQuestion + 1}. ${q.questionText}`
+        const timer = setTimeout(() => speakQuestionLoud(t), 300)
+        return () => clearTimeout(timer)
+      }
+    }
+  }, [currentQuestion, quizQuestions, autoSpeak, isLoading, showFeedback])
 
   // Fetch questions from backend
   const fetchQuestions = async () => {

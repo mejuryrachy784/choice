@@ -558,3 +558,71 @@ const LoginPage = () => {
 };
 
 export default LoginPage;
+// import React, { useState } from 'react';
+// import { authApi } from '../../config/api';
+// import { useNavigate } from 'react-router-dom';
+
+// const Login = () => {
+//   const [email, setEmail] = useState('');
+//   const [password, setPassword] = useState('');
+//   const [error, setError] = useState('');
+//   const [success, setSuccess] = useState('');
+//   const [loading, setLoading] = useState(false);
+
+//   const navigate = useNavigate();
+
+  // const handleLogin = async () => {
+  //   setError('');
+  //   setSuccess('');
+
+  //   if (!email || !password) {
+  //     setError('Please enter both email and password');
+  //     return;
+  //   }
+
+  //   setLoading(true);
+
+  //   try {
+  //     const data = await authApi.login(email, password);
+  //     console.log('Login success:', data);
+
+  //     if (data.token) {
+  //       localStorage.setItem('authToken', data.token);
+  //       setSuccess('Login successful! Redirecting...');
+  //       setTimeout(() => navigate('/dashboard'), 1000);
+  //     } else {
+  //       setError('Login failed: Invalid response from server');
+  //     }
+  //   } catch (err) {
+  //     console.error('Login failed:', err);
+  //     setError(err.message || 'Login failed. Please try again.');
+  //   } finally {
+  //     setLoading(false);
+    // }/  {/* <input 
+//         type="email" 
+//         placeholder="Email" 
+//         value={email} 
+//         onChange={(e) => setEmail(e.target.value)} 
+//         disabled={loading}
+//         style={{ display: 'block', width: '100%', padding: '10px', marginBottom: '10px' }}
+//       />
+//       <input 
+//         type="password" 
+//         placeholder="Password" 
+//         value={password} 
+//         onChange={(e) => setPassword(e.target.value)} 
+//         disabled={loading}
+//         style={{ display: 'block', width: '100%', padding: '10px', marginBottom: '10px' }}
+//       />
+//       <button 
+//         onClick={handleLogin} 
+//         disabled={loading}
+//         style={{ padding: '10px 20px', backgroundColor: '#1e90ff', color: '#fff', border: 'none', cursor: 'pointer' }}
+//       >
+//         {loading ? 'Logging in...' : 'Login'}
+//       </button>
+//     </div>
+//   );
+// };
+
+// export default Login; */}

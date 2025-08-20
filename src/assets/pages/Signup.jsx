@@ -13,7 +13,9 @@ const SignupPage = () => {
   const [success, setSuccess] = useState("");
   const navigate = useNavigate();
 
-  const BASE_URL = "http://localhost:5001/api/auth";
+  f
+  const BASE_URL = "https://choice-gneg.onrender.com/api/auth";
+
 
   // Clear messages
   const clearMessages = () => {

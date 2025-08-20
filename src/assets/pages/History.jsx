@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
 import "./History.css";
 
-const API_BASE_URL = 'http://localhost:5001/api';
+
+const API_BASE_URL = 'https://choice-gneg.onrender.com/api';
+
 
 const History = () => {
   const [sessions, setSessions] = useState([]);

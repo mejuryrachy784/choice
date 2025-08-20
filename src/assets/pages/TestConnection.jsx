@@ -10,7 +10,7 @@ const TestConnection = () => {
     
     try {
       // Test basic connection
-      const response = await fetch('http://127.0.0.1:5001/', {
+      const response = await fetch('https://choice-gneg.onrender.com/', {
         method: 'GET',
         headers: {
           'Accept': 'application/json',
@@ -36,7 +36,7 @@ const TestConnection = () => {
     setResult('Testing login...');
     
     try {
-      const response = await fetch('http://127.0.0.1:5001/api/auth/login', {
+      const response = await fetch(' https://choice-gneg.onrender.com/api/auth/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -122,5 +122,4 @@ const TestConnection = () => {
     </div>
   );
 };
-
 export default TestConnection;

@@ -2,7 +2,9 @@ import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import "./About.css";
 
-const API_BASE_URL = 'http://localhost:5001/api';
+
+const API_BASE_URL = 'https://choice-gneg.onrender.com/api';
+
 
 const About = () => {
   const navigate = useNavigate();

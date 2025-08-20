@@ -10,7 +10,9 @@ const TestAuth = () => {
     
     try {
       // Test basic connection
-      const response = await fetch('http://localhost:5001/');
+      
+      const response = await fetch('https://choice-gneg.onrender.com/');
+
       const data = await response.json();
       setResult(`✅ Backend connection: ${data.message}`);
     } catch (error) {
@@ -24,7 +26,7 @@ const TestAuth = () => {
     setResult('Testing login...');
     
     try {
-      const response = await fetch('http://localhost:5001/api/auth/login', {
+      const response = await fetch('https://choice-gneg.onrender.com/api/auth/login  ', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -53,7 +55,7 @@ const TestAuth = () => {
     setResult('Testing registration...');
     
     try {
-      const response = await fetch('http://localhost:5001/api/auth/register', {
+      const response = await fetch('https://choice-gneg.onrender.com/api/auth/register', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

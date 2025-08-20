@@ -73,7 +73,10 @@
   font-weight: 600;
   color: #2e7d32;
   cursor: pointer;
-  user-select: none;
+  -webkit-user-select: none; /* Safari */
+  -moz-user-select: none;    /* Firefox */
+  -ms-user-select: none;     /* IE/Edge */
+  user-select: none;         /* Standard */
 }
 
 .auto-speak-toggle input[type="checkbox"] {
@@ -160,7 +163,7 @@
   background: linear-gradient(135deg, #ff5722, #ff7043);
   color: white;
   box-shadow: 0 3px 10px rgba(255, 87, 34, 0.3);
-  animation: pulse 2s infinite;
+  animation: glow 2s ease-in-out infinite alternate;
 }
 
 .speak-loud-btn:hover {
@@ -181,17 +184,7 @@
   box-shadow: 0 5px 15px rgba(33, 150, 243, 0.4);
 }
 
-@keyframes pulse {
-  0% {
-    box-shadow: 0 3px 10px rgba(255, 87, 34, 0.3);
-  }
-  50% {
-    box-shadow: 0 5px 20px rgba(255, 87, 34, 0.6);
-  }
-  100% {
-    box-shadow: 0 3px 10px rgba(255, 87, 34, 0.3);
-  }
-}
+
 
 .progress {
   color: #1976d2;
@@ -231,7 +224,7 @@
   font-size: 20px;
 }
 
-.speak-btn {
+.question-header .speak-btn {
   background: #ff9800;
   color: white;
   border: none;
@@ -243,7 +236,7 @@
   transition: all 0.3s ease;
 }
 
-.speak-btn:hover {
+.question-header .speak-btn:hover {
   background: #f57c00;
   transform: scale(1.1);
 }

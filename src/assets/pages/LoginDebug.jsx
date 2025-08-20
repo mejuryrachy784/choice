@@ -8,7 +8,8 @@ const LoginDebug = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const BASE_URL = "http://localhost:5001/api/auth";
+ 
+  const BASE_URL = "https://choice-gneg.onrender.com/api/auth";
 
   const addLog = (message, type = "info") => {
     const timestamp = new Date().toLocaleTimeString();
@@ -25,7 +26,7 @@ const LoginDebug = () => {
     setLoading(true);
 
     try {
-      const response = await fetch('http://localhost:5001/', {
+      const response = await fetch('https://choice-gneg.onrender.com/ ', {
         method: 'GET',
         headers: { 'Accept': 'application/json' }
       });

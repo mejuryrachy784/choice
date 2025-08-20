@@ -194,7 +194,9 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const res = await fetch(`http://localhost:5001/api/userdata?email=${encodeURIComponent(email)}`);
+        
+        const res = await fetch(`https://choice-gneg.onrender.com/api/userdata?email=${encodeURIComponent(email)}`);
+
         
         if (!res.ok) {
           throw new Error(`Server error: ${res.status} ${res.statusText}`);

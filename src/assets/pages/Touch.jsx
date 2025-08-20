@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Touch.css";
 
-const API_BASE_URL = 'http://127.0.0.1:5001/api';
+const API_BASE_URL = 'https://choice-gneg.onrender.com/api';
 
 const Touch = () => {
   const navigate = useNavigate();

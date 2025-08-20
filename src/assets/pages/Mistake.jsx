@@ -2,8 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Mistake.css";
-
-const API_BASE_URL = 'http://localhost:5001/api';
+const API_BASE_URL = 'https://choice-gneg.onrender.com/api';
 
 const Mistakes = () => {
   const navigate = useNavigate();
@@ -166,6 +165,44 @@ const Mistakes = () => {
                 
                 <div className="mistake-question">
                   <p><strong>{mistake.question.questionText}</strong></p>
+                  <div className="audio-controls" style={{ marginTop: '8px' }}>
+                    <button
+                      className="speak-btn"
+                      title="Read question aloud"
+                      onClick={() => {
+                        if ('speechSynthesis' in window) {
+                          const u = new SpeechSynthesisUtterance(mistake.question.questionText);
+                          u.lang = 'en-US';
+                          u.rate = 0.7;
+                          u.volume = 1.0;
+                          window.speechSynthesis.cancel();
+                          window.speechSynthesis.speak(u);
+                        }
+                      }}
+                    >
+                      🔊 Speak Question
+                    </button>
+                    <button
+                      className="speak-loud-btn"
+                      title="Read question EXTRA LOUD"
+                      onClick={() => {
+                        if ('speechSynthesis' in window) {
+                          const base = mistake.question.questionText;
+                          const u1 = new SpeechSynthesisUtterance(`LISTEN CAREFULLY! ${base}`);
+                          const u2 = new SpeechSynthesisUtterance(base);
+                          [u1, u2].forEach(u => { u.lang='en-US'; u.rate=0.5; u.pitch=1.4; u.volume=1.0; });
+                          const voices = window.speechSynthesis.getVoices();
+                          const v = voices.find(v => v.name.includes('Zira')||v.name.includes('Hazel')||v.name.includes('Female')||v.name.includes('Microsoft')) || voices[0];
+                          if (v) { u1.voice = v; u2.voice = v; }
+                          window.speechSynthesis.cancel();
+                          window.speechSynthesis.speak(u1);
+                          setTimeout(() => window.speechSynthesis.speak(u2), 250);
+                        }
+                      }}
+                    >
+                      📢 SUPER LOUD!
+                    </button>
+                  </div>
                 </div>
                 
                 <div className="mistake-answers">

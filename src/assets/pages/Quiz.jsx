@@ -2,7 +2,9 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Quiz.css';
 
-const API_BASE_URL = 'http://localhost:5001/api';
+
+const API_BASE_URL = 'https://choice-gneg.onrender.com/api';
+
 
 const DrivingLicenseQuiz = () => {
   const navigate = useNavigate();
@@ -400,6 +402,32 @@ const DrivingLicenseQuiz = () => {
                 </div>
                 
                 <p className="question-text">{question.questionText}</p>
+                <div className="audio-controls">
+                  <button 
+                    onClick={() => speak(question.questionText, true)} 
+                    className="speak-btn"
+                    title="Read question aloud"
+                  >
+                    🔊 Speak Question
+                  </button>
+                  <button 
+                    onClick={() => speakExtraLoud(question.questionText)} 
+                    className="speak-loud-btn"
+                    title="Read question EXTRA LOUD"
+                  >
+                    📢 SUPER LOUD!
+                  </button>
+                  <button 
+                    onClick={() => {
+                      const optionsText = question.options.map((opt) => `Option ${opt.id}: ${opt.text}`).join('. ');
+                      speak(`Question: ${question.questionText}. Your options are: ${optionsText}`, true);
+                    }} 
+                    className="speak-all-btn"
+                    title="Read question and all options"
+                  >
+                    🎯 Speak All
+                  </button>
+                </div>
                 
                 <div className="answer-review">
                   <p><strong>Your Answer:</strong> {userAnswer ? `${userAnswer}. ${question.options.find(opt => opt.id === userAnswer)?.text || 'Unknown'}` : 'No answer'}</p>
