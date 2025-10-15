@@ -21,7 +21,7 @@
 //   origin: function (origin, callback) {
 //     // Allow requests with no origin (like mobile apps or curl requests)
 //     if (!origin) return callback(null, true);
-    
+
 //     const allowedOrigins = [
 //       // Development URLs
 //       'https://choice-gneg.onrender.com',
@@ -42,14 +42,14 @@
 //       'https://driving-license-quiz-git-main-mejuryrachy784.vercel.app',
 //       // Add your actual Vercel URLs here after deployment
 //     ];
-    
+
 //     // In production, also allow any vercel.app subdomain for this project
 //     if (process.env.NODE_ENV === 'production') {
 //       if (origin.includes('vercel.app') && origin.includes('driving-license-quiz')) {
 //         return callback(null, true);
 //       }
 //     }
-    
+
 //     if (allowedOrigins.indexOf(origin) !== -1) {
 //       callback(null, true);
 //     } else {
@@ -182,9 +182,7 @@ const PORT = process.env.PORT || 5001;
 
 // ✅ Allowed frontend origins
 const allowedOrigins = [
-  
- 
-  'https://choice-phi.vercel.app', // Main frontend
+  'https://choice-yfei-6y95wxdqy-mejuryzvarevashes-projects.vercel.app', // Main frontend
   'https://choice-gneg.onrender.com',        // Backend (optional)
   'http://localhost:5173',
   'http://localhost:3000',
@@ -269,12 +267,17 @@ app.get("/api/test-cors", (req, res) => {
 });
 
 app.post("/api/test-cors", (req, res) => {
-  res.json({
-    message: "✅ CORS POST is working!",
-    origin: req.headers.origin,
-    body: req.body,
-    timestamp: new Date().toISOString()
-  });
+  try {
+    res.json({
+      message: "✅ CORS POST is working!",
+      origin: req.headers.origin,
+      body: req.body,
+      timestamp: new Date().toISOString()
+    });
+  } catch (err) {
+    console.error("❌ Test CORS POST error:", err);
+    res.status(500).json({ error: "Test CORS POST failed" });
+  }
 });
 
 // Health check
@@ -313,6 +316,14 @@ app.use((req, res) => {
 
 // Start server
 app.listen(PORT, () => {
-  console.log(`🚀 Server running on http://localhost:${PORT}`);
-  console.log(`📚 API available at https://choice-gneg.onrender.com`);
+  if (process.env.RENDER_EXTERNAL_URL) {
+    // On Render
+    const publicUrl = process.env.RENDER_EXTERNAL_URL;
+    console.log(`🚀 Server running on ${publicUrl}`);
+    console.log(`📚 API available at ${publicUrl}`);
+  } else {
+    // Local development
+    console.log(`🚀 Server running on http://localhost:${PORT}`);
+    console.log(`📚 API Documentation available at http://localhost:${PORT}`);
+  }
 });
