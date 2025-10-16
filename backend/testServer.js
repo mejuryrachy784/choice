@@ -40,8 +40,8 @@ const server = app.listen(PORT, (err) => {
     console.error('❌ Server failed to start:', err);
     process.exit(1);
   }
-  console.log(`🚀 Test server running on http://localhost:${PORT}`);
-  console.log(`📚 Test endpoint: http://localhost:${PORT}/test`);
+  console.log(`🚀 Test server running on https://choice-gneg.onrender.com:${PORT}`);
+  console.log(`📚 Test endpoint: https://choice-gneg.onrender.com:${PORT}/test`);
 });
 
 server.on('error', (err) => {

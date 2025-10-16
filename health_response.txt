@@ -1,0 +1,1 @@
+{"message":"✅ Choice Quiz API is running","version":"2.0.0","endpoints":{"auth":"/api/auth","quiz":"/api/quiz","results":"/api/results","dashboard":"/api/dashboard","history":"/api/quiz/history","instructions":"/api/instructions","testCors":"/api/test-cors"}}
