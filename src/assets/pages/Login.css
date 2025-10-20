@@ -120,8 +120,8 @@
   border-radius: 10px;
   font-size: 16px;
   transition: all 0.3s ease;
-  background: #c7c5eb;
-  color: #d1d1e2;
+  background: #ffffff;
+  color: #333333;
 }
 
 .input-group input:focus,
