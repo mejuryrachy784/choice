@@ -82,10 +82,10 @@ dist
 public
 
 # Vite build output
-dist/
+# dist/
 
 # Rollup build output
-dist/
+# dist/
 
 # Storybook build outputs
 .out
